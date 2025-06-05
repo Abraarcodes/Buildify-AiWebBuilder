@@ -472,7 +472,7 @@ export function Builder() {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
-        <h1 className="text-xl font-semibold text-gray-100">Website Builder</h1>
+        <h1 className="text-xl font-semibold text-gray-100">Buildify</h1>
         <p className="text-sm text-gray-400 mt-1">Prompt: {prompt}</p>
       </header>
       
@@ -495,30 +495,38 @@ export function Builder() {
                     <textarea value={userPrompt} onChange={(e) => {
                     setPrompt(e.target.value)
                   }} className='p-2 w-full'></textarea>
+           
                   <button onClick={async () => {
-                    const newMessage = {
-                      role: "user" as "user",
-                      content: userPrompt
-                    };
+  const newMessage = {
+    role: "user" as "user",
+    content: userPrompt
+  };
 
-                    setLoading(true);
-                    const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, {
-                      messages: [...llmMessages, newMessage]
-                    });
-                    setLoading(false);
+  const messagesToSend = [...llmMessages, newMessage];
 
-                    setLlmMessages(x => [...x, newMessage]);
-                    setLlmMessages(x => [...x, {
-                      role: "assistant",
-                      content: stepsResponse.data.response
-                    }]);
-                    
-                    setSteps(s => [...s, ...parseXml(stepsResponse.data.response).map(x => ({
-                      ...x,
-                      status: "pending" as "pending"
-                    }))]);
+  console.log("Sending messages to backend:", messagesToSend);
 
-                  }} className='bg-purple-400 px-4'>Send</button>
+  setLoading(true);
+
+  const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, {
+    messages: messagesToSend
+  });
+
+  setLoading(false);
+
+  setLlmMessages(x => [...x, newMessage]);
+  setLlmMessages(x => [...x, {
+    role: "assistant",
+    content: stepsResponse.data.response
+  }]);
+
+  setSteps(s => [...s, ...parseXml(stepsResponse.data.response).map(x => ({
+    ...x,
+    status: "pending" as "pending"
+  }))]);
+
+}} className='bg-purple-400 px-4'>Send</button>
+
                   </div>}
                 </div>
               </div>

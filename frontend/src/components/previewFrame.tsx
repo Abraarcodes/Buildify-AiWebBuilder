@@ -66,6 +66,9 @@ export function PreviewFrame({ files, webContainer }: PreviewFrameProps) {
     }
   };
 
+
+ 
+  
   // Effect hook to write files to the container
   useEffect(() => {
     if (webContainer && files.length > 0) {
