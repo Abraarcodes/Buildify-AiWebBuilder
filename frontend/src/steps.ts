@@ -3,14 +3,14 @@ import { Step, StepType } from './types';
 /*
  * Parse input XML and convert it into steps.
  * Eg: Input - 
- * <boltArtifact id=\"project-import\" title=\"Project Files\">
- *  <boltAction type=\"file\" filePath=\"eslint.config.js\">
+ * <BuildifyArtifact id=\"project-import\" title=\"Project Files\">
+ *  <BuildifyAction type=\"file\" filePath=\"eslint.config.js\">
  *      import js from '@eslint/js';\nimport globals from 'globals';\n
- *  </boltAction>
- * <boltAction type="shell">
+ *  </BuildifyAction>
+ * <BuildifyAction type="shell">
  *      node index.js
- * </boltAction>
- * </boltArtifact>
+ * </BuildifyAction>
+ * </BuildifyArtifact>
  * 
  * Output - 
  * [{
@@ -29,8 +29,8 @@ import { Step, StepType } from './types';
  * The input can have strings in the middle they need to be ignored
  */
 export function parseXml(response: string): Step[] {
-    // Extract the XML content between <boltArtifact> tags
-    const xmlMatch = response.match(/<boltArtifact[^>]*>([\s\S]*?)<\/boltArtifact>/);
+    // Extract the XML content between <BuildifyArtifact> tags
+    const xmlMatch = response.match(/<BuildifyArtifact[^>]*>([\s\S]*?)<\/BuildifyArtifact>/);
     
     if (!xmlMatch) {
       return [];
@@ -53,8 +53,8 @@ export function parseXml(response: string): Step[] {
       status: 'pending'
     });
   
-    // Regular expression to find boltAction elements
-    const actionRegex = /<boltAction\s+type="([^"]*)"(?:\s+filePath="([^"]*)")?>([\s\S]*?)<\/boltAction>/g;
+    // Regular expression to find BuildifyAction elements
+    const actionRegex = /<BuildifyAction\s+type="([^"]*)"(?:\s+filePath="([^"]*)")?>([\s\S]*?)<\/BuildifyAction>/g;
     
     let match;
     while ((match = actionRegex.exec(xmlContent)) !== null) {
